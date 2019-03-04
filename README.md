@@ -1,6 +1,7 @@
 # ssm-cache
 
-Simple ssm-cache extracted from [lambda-cache-example](github.com/wolfeidau/lambda-cache-example)
+Simple ssm-cache extracted from [lambda-cache-example](github.com/wolfeidau/lambda-cache-example).
+
 Caches a SSM parameter (defaults for 30 seconds).
 This ensures that you only hit the [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) API to refresh and not every time the lambda is triggered, therefore avoiding rate limiting your self.
 
