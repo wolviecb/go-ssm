@@ -7,8 +7,6 @@ This ensures that you only hit the [AWS Systems Manager Parameter Store](https:/
 
 ## example
 
-The below example is based on the api gateway code in [Announcing Go Support for AWS Lambda](https://aws.amazon.com/blogs/compute/announcing-go-support-for-aws-lambda/).
-
 ```go
 region := "eu-west-1"
 
@@ -33,6 +31,18 @@ func ssmCheck() string {
   }
   return ssmvc
 }
+```
+
+to set the default expiry time run, the default is 30s
+
+```go
+ssmcache.SetDefaultExpiry(300 * time.Second)
+```
+
+to fetch the parameter with decryption run, the default is false
+
+```go
+ssmcache.SetDefautlDecryption(true)
 ```
 
 ## license
