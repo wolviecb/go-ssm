@@ -21,6 +21,14 @@ func SetDefaultExpiry(expires time.Duration) {
 	defaultExpiry = expires
 }
 
+var withDecryption = false
+
+// SetDefautlDecryption updates the WithDecryption value to instruct
+// the ssm client to try to decrypt the parameter on fetch
+func SetDefautlDecryption(decryption bool) {
+	withDecryption = decryption
+}
+
 // Entry an SSM entry in the cache
 type Entry struct {
 	value   string
@@ -74,7 +82,8 @@ func (ssc *cache) updateParam(key string) (string, error) {
 	log.Println("updating key from ssm:", key)
 
 	resp, err := ssc.ssmSvc.GetParameter(&ssm.GetParameterInput{
-		Name: aws.String(key),
+		Name:           aws.String(key),
+		WithDecryption: &withDecryption,
 	})
 	if err != nil {
 		return "", errors.Wrapf(err, "failed to retrieve key %s from ssm", key)
