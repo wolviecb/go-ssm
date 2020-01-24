@@ -38,6 +38,7 @@ type Entry struct {
 // Cache SSM cache which provides read access to parameters
 type Cache interface {
 	GetKey(key string) (string, error)
+	GetKeyWithEncryption(key string, enc bool) (string, error)
 }
 
 type cache struct {
@@ -63,27 +64,50 @@ func (ssc *cache) GetKey(key string) (string, error) {
 	ent, ok := ssc.ssmValues[key]
 	if !ok {
 		// record is missing
-		return ssc.updateParam(key)
+		return ssc.updateParam(key, withDecryption)
 	}
 
 	if time.Now().After(ent.expires) {
 		// we have expired and need to refresh
 		log.Println("expired cache refreshing value")
 
-		return ssc.updateParam(key)
+		return ssc.updateParam(key, withDecryption)
 	}
 
 	// return the value
 	return ent.value, nil
 }
 
-func (ssc *cache) updateParam(key string) (string, error) {
+// GetKeyWithEncryption retrieve a parameter from SSM and cache it.
+func (ssc *cache) GetKeyWithEncryption(key string, enc bool) (string, error) {
+
+	ssc.ssm.Lock()
+	defer ssc.ssm.Unlock()
+
+	ent, ok := ssc.ssmValues[key]
+	if !ok {
+		// record is missing
+		return ssc.updateParam(key, enc)
+	}
+
+	if time.Now().After(ent.expires) {
+		// we have expired and need to refresh
+		log.Println("expired cache refreshing value")
+
+		return ssc.updateParam(key, enc)
+	}
+
+	// return the value
+	return ent.value, nil
+}
+
+func (ssc *cache) updateParam(key string, enc bool) (string, error) {
 
 	log.Println("updating key from ssm:", key)
 
 	resp, err := ssc.ssmSvc.GetParameter(&ssm.GetParameterInput{
 		Name:           aws.String(key),
-		WithDecryption: &withDecryption,
+		WithDecryption: &enc,
 	})
 	if err != nil {
 		return "", errors.Wrapf(err, "failed to retrieve key %s from ssm", key)
