@@ -23,9 +23,9 @@ func SetDefaultExpiry(expires time.Duration) {
 
 var withDecryption = false
 
-// SetDefautlDecryption updates the WithDecryption value to instruct
+// SetDefaultDecryption updates the WithDecryption value to instruct
 // the ssm client to try to decrypt the parameter on fetch
-func SetDefautlDecryption(decryption bool) {
+func SetDefaultDecryption(decryption bool) {
 	withDecryption = decryption
 }
 
