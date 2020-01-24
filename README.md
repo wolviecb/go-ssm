@@ -8,14 +8,20 @@ This ensures that you only hit the [AWS Systems Manager Parameter Store](https:/
 ## example
 
 ```go
-region := "eu-west-1"
+package main
+
+import (
+  "github.com/aws/aws-sdk-go/aws"
+  "github.com/aws/aws-sdk-go/aws/session"
+  "github.com/wolviecb/go-ssm/ssmcache"
+)
 
 var (
   cache = ssmcache.New(
     session.Must(
       session.NewSessionWithOptions(
         session.Options{
-          Config:            aws.Config{Region: aws.String(region)},
+          Config:            aws.Config{Region: aws.String("eu-west-1")},
           SharedConfigState: session.SharedConfigEnable,
         },
       ),
@@ -42,7 +48,7 @@ ssmcache.SetDefaultExpiry(300 * time.Second)
 to fetch the parameter with decryption run, the default is false
 
 ```go
-ssmcache.SetDefautlDecryption(true)
+ssmcache.SetDefaultDecryption(true)
 ```
 
 ## license
