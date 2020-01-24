@@ -1,6 +1,2 @@
-/main
-*.out.yml
-/vendor
-.envrc
-handler.zip
 coverage.txt
+.vscode
