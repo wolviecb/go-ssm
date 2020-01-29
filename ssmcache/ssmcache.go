@@ -40,6 +40,7 @@ type Cache interface {
 	GetKey(key string) (string, error)
 	GetKeyWithEncryption(key string, enc bool) (string, error)
 	ForceUpdate(key string) error
+	ForceEncryptedUpdate(key string, enc bool) error
 }
 
 type cache struct {
@@ -105,6 +106,12 @@ func (ssc *cache) GetKeyWithEncryption(key string, enc bool) (string, error) {
 // ForceUpdate forces the update of the parameter
 func (ssc *cache) ForceUpdate(key string) error {
 	_, err := ssc.updateParam(key, withDecryption)
+	return err
+}
+
+// ForceEncryptedUpdate forces the update of the parameter
+func (ssc *cache) ForceEncryptedUpdate(key string, enc bool) error {
+	_, err := ssc.updateParam(key, enc)
 	return err
 }
 
