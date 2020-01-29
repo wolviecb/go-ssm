@@ -39,6 +39,7 @@ type Entry struct {
 type Cache interface {
 	GetKey(key string) (string, error)
 	GetKeyWithEncryption(key string, enc bool) (string, error)
+	ForceUpdate(key string) error
 }
 
 type cache struct {
@@ -99,6 +100,12 @@ func (ssc *cache) GetKeyWithEncryption(key string, enc bool) (string, error) {
 
 	// return the value
 	return ent.value, nil
+}
+
+// ForceUpdate forces the update of the parameter
+func (ssc *cache) ForceUpdate(key string) error {
+	_, err := ssc.updateParam(key, withDecryption)
+	return err
 }
 
 func (ssc *cache) updateParam(key string, enc bool) (string, error) {
